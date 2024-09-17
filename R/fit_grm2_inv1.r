@@ -198,7 +198,7 @@ variable_statement <- formula(
 first_line <- '\n'
 file_line <- paste0('FILE = ',mplus_file,'_inv1_scores.dat;\n')
 save_line <- 'SAVE = FSCORES;\n'
-save_h5_line <- paste0('H5RESULTS = ',mplus_file,'__inv1_results.H5;\n')
+save_h5_line <- paste0('H5RESULTS = ',mplus_file,'_inv1_results.H5;\n')
 
 save_table <- data.frame(
               save_lines = c(
