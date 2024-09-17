@@ -145,24 +145,7 @@ header=TRUE, stringsAsFactors = FALSE)
 
 
 responses <- responses %>%
-             mutate(ctry = case_when(
-              ctry_name == 'Argentina' ~ 'ARG',
-              ctry_name == 'Brasil' ~ 'BRA',
-              ctry_name == 'Colombia' ~ 'COL',
-              ctry_name == 'Costa Rica' ~ 'CRI',
-              ctry_name == 'Cuba' ~ 'CUB',
-              ctry_name == 'República Dominicana' ~ 'DOM',
-              ctry_name == 'Ecuador' ~ 'ECU',
-              ctry_name == 'El Salvador' ~ 'SAL',
-              ctry_name == 'Guatemala' ~ 'GTM',
-              ctry_name == 'Honduras' ~ 'HON',
-              ctry_name == 'México' ~ 'MEX',
-              ctry_name == 'Nicaragua' ~ 'NIC',
-              ctry_name == 'Panamá' ~ 'PAN',
-              ctry_name == 'Paraguay' ~ 'PAR',
-              ctry_name == 'Perú' ~ 'PER',
-              ctry_name == 'Uruguay' ~ 'URU'
-              ))
+             mutate(ctry = COUNTRY)
 
 grouping_lines_2 <- dplyr::count(responses, id_k, ctry, ctry_name) %>%
 dplyr::select(id_k, ctry, ctry_name) %>%
