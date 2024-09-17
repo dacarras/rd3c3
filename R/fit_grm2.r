@@ -166,12 +166,14 @@ variable_statement <- formula(
 first_line <- '\n'
 file_line <- paste0('FILE = ',mplus_file,'_scores.dat;\n')
 save_line <- 'SAVE = FSCORES;\n'
+save_h5_line <- paste0('H5RESULTS = ',mplus_file,'_results.H5;\n')
 
 save_table <- data.frame(
               save_lines = c(
               first_line,
               file_line,
-              save_line
+              save_line,
+              save_h5_line
               ))
 
 save_structure <- save_table %>%
