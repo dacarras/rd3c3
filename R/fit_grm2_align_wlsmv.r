@@ -14,7 +14,7 @@
 #' data = data_model)
 #'
 #'
-fit_grm2_align <- function(data, scale_num, scale_info) {
+fit_grm2_align_wlsmv <- function(data, scale_num, scale_info) {
 
 # -----------------------------------------------
 # main objects
@@ -152,21 +152,61 @@ variable_lines
 header=TRUE, stringsAsFactors = FALSE)
 
 # -----------------------------------------------
-# grouping lines
+# mplus variable statement
 # -----------------------------------------------
 
-number_of_k <- responses %>%
-               dplyr::count(id_k) %>%
-               nrow()
+categorical_lines <- item_table %>%
+                     dplyr::filter(
+                     scale_num == selected_scale) %>%
+                     mutate(variable_lines = paste0(item,'\n')) %>%
+                     dplyr::select(variable_lines)
+
+variable_lines <- item_table %>%
+                     dplyr::filter(
+                     scale_num == selected_scale) %>%
+                     mutate(variable_lines = paste0(item,'\n')) %>%
+                     dplyr::select(variable_lines)
 
 
-number_of_classes <- data.frame(
-variable_lines = paste0('CLASSES = c(',number_of_k,');\n')
-)
+categorical_equal_lines <- read.table(
+text="
+variable_lines
+'\n'
+'CATEGORICAL =         \n'
+",
+header=TRUE, stringsAsFactors = FALSE)
 
-known_class_lines <- data.frame(
-variable_lines = paste0('KNOWNCLASS = c(id_k = \n')
-)
+
+usevariable_equal_lines <- read.table(
+text="
+variable_lines
+'\n'
+'USEVARIABLES =         \n'
+",
+header=TRUE, stringsAsFactors = FALSE)
+
+
+design_lines <- read.table(
+text="
+variable_lines
+'\n'
+'STRATIFICATION = id_s;\n'
+'CLUSTER        = id_j;\n'
+'WEIGHT         = ws;  \n'
+'IDVARIABLE     = id_i;\n'
+'                      \n'
+",
+header=TRUE, stringsAsFactors = FALSE)
+
+
+grouping_lines_1 <- read.table(
+text="
+variable_lines
+'\n'
+'GROUPING = id_k (              \n'
+'\n'
+",
+header=TRUE, stringsAsFactors = FALSE)
 
 
 responses <- responses %>%
@@ -174,42 +214,39 @@ responses <- responses %>%
 
 grouping_lines_2 <- dplyr::count(responses, id_k, ctry, ctry_name) %>%
 dplyr::select(id_k, ctry, ctry_name) %>%
-mutate(variable_lines = paste0(id_k, ' !', ctry_name)) %>%
+mutate(variable_lines = paste0(id_k, ' = ', ctry, ' !', ctry_name)) %>%
 mutate(variable_lines = paste0(variable_lines,'\n')) %>%
 dplyr::select(variable_lines)
 
+grouping_lines_3 <- read.table(
+text="
+variable_lines
+'\n'
+');\n'
+",
+header=TRUE, stringsAsFactors = FALSE)
 
-closing_lines_01 <- read.table(
+closing_lines <- read.table(
 text="
 variable_lines
 ';\n'
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
-
-closing_lines_02 <- read.table(
-text="
-variable_lines
-')\n'
-';\n'
-",
-header=TRUE, stringsAsFactors = FALSE)
-
-model_lines <- dplyr::bind_rows(
+variable_lines <- dplyr::bind_rows(
                       design_lines,
                       usevariable_equal_lines,
                       variable_lines,
-                      closing_lines_01,
+                      closing_lines,
                       categorical_equal_lines,
                       categorical_lines,
-                      closing_lines_01,
-                      number_of_classes,
-                      known_class_lines,
+                      closing_lines,
+                      grouping_lines_1,
                       grouping_lines_2,
-                      closing_lines_02
+                      grouping_lines_3
                       )
 
-variable_structure <- model_lines %>%
+variable_structure <- variable_lines %>%
                       unlist() %>%
                       stringr::str_c(., collapse = '')
 
@@ -218,7 +255,6 @@ variable_statement <- formula(
                    noquote(
                    variable_structure
                    ))))
-
 # -----------------------------------------------
 # mplus savedata statement
 # -----------------------------------------------
@@ -248,13 +284,6 @@ save_statement <- formula(
 # mplus model statement
 # -----------------------------------------------
 
-overall_lines <- read.table(
-text="
-lambda_lines
-'%OVERALL%\n'
-",
-header=TRUE, stringsAsFactors = FALSE)
-
 
 lambda_lines <- item_table %>%
                 dplyr::filter(scale_num == selected_scale) %>%
@@ -265,7 +294,6 @@ lambda_lines <- item_table %>%
 
 
 lambda_table <- dplyr::bind_rows(
-                overall_lines,
                 lambda_lines
                 )
 
@@ -293,10 +321,10 @@ eta by i03;
 eta by i04;
 ', # this is the model statement
 ANALYSIS = '
-TYPE = COMPLEX MIXTURE;
+TYPE = COMPLEX;
+ESTIMATOR = WLSMV;
 ALIGNMENT = FREE;
 PROCESSORS = 4;
-ALGORITHM = INTEGRATION;
 ',
 VARIABLE ='
 STRATIFICATION = id_s;
