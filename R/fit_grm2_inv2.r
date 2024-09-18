@@ -228,8 +228,20 @@ lambda_lines <- item_table %>%
                 paste0('eta by ',i, ';\n')) %>%
                 dplyr::select(lambda_lines)
 
+latent_mean <- read.table(
+text="
+lambda_lines
+'\n'
+'![eta@0];\n'
+'!eta;\n'
+'\n'
+",
+header=TRUE, stringsAsFactors = FALSE)
 
-lambda_table <- lambda_lines
+
+lambda_table <- dplyr::bind_rows(
+                latent_mean,
+                lambda_lines)
 
 
 model_structure <- lambda_table %>%
