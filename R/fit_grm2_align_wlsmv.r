@@ -243,7 +243,7 @@ variable_statement <- formula(
 # -----------------------------------------------
 
 first_line <- '\n'
-file_line <- paste0('RANKINGS = ',mplus_file,'_align_rangking.dat;\n')
+file_line <- paste0('RANKINGS = ',mplus_file,'_align_ranking.dat;\n')
 save_h5_line <- paste0('H5RESULTS = ',mplus_file,'_align_results.H5;\n')
 
 save_table <- data.frame(
