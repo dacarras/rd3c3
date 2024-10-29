@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_grm2_align_wlsmv.r
 \name{fit_grm2_align_wlsmv}
 \alias{fit_grm2_align_wlsmv}
-\title{fit_grm2_align() it fits a between country GRM with alignment method using MPLUS and MplusAutomation}
+\title{fit_grm2_align_wlsmv() it fits a between country GRM with alignment method, with a complex sample design using MPLUS and MplusAutomation}
 \usage{
 fit_grm2_align_wlsmv(data, scale_num, scale_info)
 }
@@ -17,11 +17,11 @@ fit_grm2_align_wlsmv(data, scale_num, scale_info)
 mplus_object generated with MplusAutomation
 }
 \description{
-fit_grm2_align() it fits a between country GRM with alignment method using MPLUS and MplusAutomation
+fit_grm2_align_wlsmv() it fits a between country GRM with alignment method, with a complex sample design using MPLUS and MplusAutomation
 }
 \examples{
 
-scale_001_lign <- fit_grm2_align(
+scale_001_align <- fit_grm2_align_wlsmv(
 scale_info = scales_data,
 scale_num  = 1,
 data = data_model)
