@@ -101,7 +101,7 @@ reverse_items <- scales_data %>%
                  .$item
 
 design_data <- responses %>%
-               dplyr::select(id_i, id_j, id_s, all_of(grp_var))
+               dplyr::select(id_i, id_j, id_s, ws, all_of(grp_var))
 
 items_data <- responses %>%
               rename_at(vars(all_of(pre_names)), ~paste0(new_names)) %>%
@@ -223,9 +223,16 @@ save_statement <- formula(
 # mplus model statement
 # -----------------------------------------------
 
+num_categories <- dplyr::select(items_data, 1) %>%
+                  na.omit() %>%
+                  unique() %>%
+                  nrow()
+
+num_thresholds <- num_categories - 1
+
 var_names  <- new_names
 thresholds <- data.frame(items = var_names) %>%
-              mutate(thresholds = 3) %>%
+              mutate(thresholds = num_thresholds) %>%
               dplyr::select(thresholds) %>%
               dplyr::pull()
 
