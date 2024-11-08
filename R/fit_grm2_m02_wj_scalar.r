@@ -12,8 +12,8 @@
 #' @examples
 #'
 #' inv_2 <- fit_grm2_m01_wj_strict(
-#'          data = data_model, 
-#'          scale_num = scale_id, 
+#'          data = data_model,
+#'          scale_num = scale_id,
 #'          scale_info = scales_data,
 #'          grp_var = 'id_k',
 #'          grp_txt = 'CNTRY',
@@ -21,7 +21,7 @@
 #'          )
 #'
 #'
-fit_grm2_m01_wj_scalar <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
+fit_grm2_m02_wj_scalar <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
 
 # -----------------------------------------------
 # main objects
@@ -57,7 +57,7 @@ grp_ref <- grp_ref
 # -----------------------------------------------
 
 group_lines <- grouping_lines(
-               data    = responses, 
+               data    = responses,
                grp_var = grp_var,
                grp_txt = grp_txt
                )
@@ -236,7 +236,7 @@ thresholds <- data.frame(items = var_names) %>%
               dplyr::select(thresholds) %>%
               dplyr::pull()
 
-grp_tab <- dplyr::count(data, 
+grp_tab <- dplyr::count(data,
            !!!rlang::syms(grp_var),
            !!!rlang::syms(grp_txt)
            )
