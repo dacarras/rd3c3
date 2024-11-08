@@ -1,4 +1,4 @@
-#' fit_grm2_m03_wj_config() it fits a graded response model (GRM) using MPLUS and MplusAutomation
+#' fit_grm2_m02_wj_scalar() it fits a graded response model (GRM) using MPLUS and MplusAutomation
 #'
 #' @param data a data frame, where rows = observations, and columns = variables
 #' @param scale_num a number, that identifies a unique set of items within the scale_info table
@@ -11,7 +11,7 @@
 #'
 #' @examples
 #'
-#' inv_3 <- fit_grm2_m03_wj_config(
+#' inv_2 <- fit_grm2_m01_wj_strict(
 #'          data = data_model, 
 #'          scale_num = scale_id, 
 #'          scale_info = scales_data,
@@ -21,7 +21,7 @@
 #'          )
 #'
 #'
-fit_grm2_m03_config <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
+fit_grm2_m01_wj_scalar <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
 
 # -----------------------------------------------
 # main objects
@@ -151,7 +151,7 @@ design_lines <- read.table(
 text="
 variable_lines
 '\n'
-'STRATIFICATION = id_s;\n'
+'!STRATIFICATION = id_s;\n'
 'CLUSTER        = id_j;\n'
 'WEIGHT         = ws;  \n'
 'IDVARIABLE     = id_i;\n'
@@ -244,7 +244,7 @@ grp_tab <- dplyr::count(data,
 grp_lst <- grp_tab[2] %>%
            dplyr::pull()
 
-model_structure <- gen_configural_model(grp_lst, grp_ref, var_names, thresholds, file = paste0(mplus_file,'_inv_03_mod.txt'))
+model_structure <- gen_scalar_model(grp_lst, grp_ref, var_names, thresholds, file = paste0(mplus_file,'_inv_02_mod.txt'))
 
 model_statement <- formula(
                    bquote(~.(
@@ -309,7 +309,7 @@ mplus_object <- grm_model %>%
                 SAVEDATA = save_statement
                 ) %>%
                 mplusModeler(.,
-                modelout = paste0(mplus_file,'_inv_03.inp'),
+                modelout = paste0(mplus_file,'_inv_02.inp'),
                 run = 1L,
                 hashfilename = FALSE,
                 writeData = 'always')

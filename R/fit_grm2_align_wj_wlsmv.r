@@ -1,27 +1,22 @@
-#' fit_grm2_m03_wj_config() it fits a graded response model (GRM) using MPLUS and MplusAutomation
+#' fit_grm2_align_wj_wlsmv() it fits a between country GRM with alignment method, 
+#' with a complex sample design using MPLUS and MplusAutomation.
+#' The "_wj_" version uses taylor series linearization, using clusters and weights.
 #'
 #' @param data a data frame, where rows = observations, and columns = variables
 #' @param scale_num a number, that identifies a unique set of items within the scale_info table
 #' @param scale_info a data frame where items memmbership to scale is uniquely identify
-#' @param grp_var group variable (as numeric)
-#' @param grp_txt group variable (as text)
-#' @param grp_ref reference group
 #' @return mplus_object generated with MplusAutomation
 #' @export
 #'
 #' @examples
 #'
-#' inv_3 <- fit_grm2_m03_wj_config(
-#'          data = data_model, 
-#'          scale_num = scale_id, 
-#'          scale_info = scales_data,
-#'          grp_var = 'id_k',
-#'          grp_txt = 'CNTRY',
-#'          grp_ref = 'CHL'
-#'          )
+#' scale_001_align <- fit_grm2_align_wlsmv(
+#' scale_info = scales_data,
+#' scale_num  = 1,
+#' data = data_model)
 #'
 #'
-fit_grm2_m03_config <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
+fit_grm2_align_wj_wlsmv <- function(data, scale_num, scale_info) {
 
 # -----------------------------------------------
 # main objects
@@ -37,30 +32,12 @@ mplus_file     <- scale_info %>%
                   unique() %>%
                   .$mplus_file
 
+# example
+#
 # selected_scale <- 3
 # responses      <- response_data
 # item_table     <- scales_data
 # mplus_file     <- 'scale_003'
-
-grp_var <- grp_var
-grp_txt <- grp_txt
-grp_ref <- grp_ref
-
-# -----------------------------------------------
-# source functions
-# -----------------------------------------------
-
-# source('fit_grm2_m00_basic_generators.r')
-
-# -----------------------------------------------
-# grouping
-# -----------------------------------------------
-
-group_lines <- grouping_lines(
-               data    = responses, 
-               grp_var = grp_var,
-               grp_txt = grp_txt
-               )
 
 # -----------------------------------------------
 # requires
@@ -101,13 +78,13 @@ reverse_items <- scales_data %>%
                  .$item
 
 design_data <- responses %>%
-               dplyr::select(id_i, id_j, id_s, ws, all_of(grp_var))
+               dplyr::select(id_k, id_i, id_j, id_s, ws)
 
 items_data <- responses %>%
-              rename_at(vars(all_of(pre_names)), ~paste0(new_names)) %>%
+              rename_at(vars(pre_names), ~paste0(new_names)) %>%
               mutate_at(
-              	.vars = reverse_items,
-              	.funs = ~r4sda::reverse(.)) %>%
+                .vars = reverse_items,
+                .funs = ~r4sda::reverse(.)) %>%
               dplyr::select(one_of(item_names))
 data_model <- dplyr::bind_cols(
               design_data, items_data)
@@ -159,6 +136,83 @@ variable_lines
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
+# -----------------------------------------------
+# mplus variable statement
+# -----------------------------------------------
+
+categorical_lines <- item_table %>%
+                     dplyr::filter(
+                     scale_num == selected_scale) %>%
+                     mutate(variable_lines = paste0(item,'\n')) %>%
+                     dplyr::select(variable_lines)
+
+variable_lines <- item_table %>%
+                     dplyr::filter(
+                     scale_num == selected_scale) %>%
+                     mutate(variable_lines = paste0(item,'\n')) %>%
+                     dplyr::select(variable_lines)
+
+
+categorical_equal_lines <- read.table(
+text="
+variable_lines
+'\n'
+'CATEGORICAL =         \n'
+",
+header=TRUE, stringsAsFactors = FALSE)
+
+
+usevariable_equal_lines <- read.table(
+text="
+variable_lines
+'\n'
+'USEVARIABLES =         \n'
+",
+header=TRUE, stringsAsFactors = FALSE)
+
+
+design_lines <- read.table(
+text="
+variable_lines
+'\n'
+'STRATIFICATION = id_s;\n'
+'CLUSTER        = id_j;\n'
+'WEIGHT         = ws;  \n'
+'IDVARIABLE     = id_i;\n'
+'                      \n'
+",
+header=TRUE, stringsAsFactors = FALSE)
+
+
+grouping_lines_1 <- read.table(
+text="
+variable_lines
+'\n'
+'GROUPING = id_k (              \n'
+'\n'
+",
+header=TRUE, stringsAsFactors = FALSE)
+
+# -----------------------------------------------
+# grouping_lines
+# -----------------------------------------------
+
+responses <- responses %>%
+             mutate(ctry = COUNTRY)
+
+grouping_lines_2 <- dplyr::count(responses, id_k, grp, grp_name) %>%
+dplyr::select(id_k, grp, grp_name) %>%
+mutate(variable_lines = paste0(id_k, ' = ', grp, ' !', grp_name)) %>%
+mutate(variable_lines = paste0(variable_lines,'\n')) %>%
+dplyr::select(variable_lines)
+
+grouping_lines_3 <- read.table(
+text="
+variable_lines
+'\n'
+');\n'
+",
+header=TRUE, stringsAsFactors = FALSE)
 
 closing_lines <- read.table(
 text="
@@ -167,46 +221,41 @@ variable_lines
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
-group_lines <- data.frame(
-variable_lines = group_lines
-)
-
-
 variable_lines <- dplyr::bind_rows(
-                  design_lines,
-                  usevariable_equal_lines,
-                  variable_lines,
-                  closing_lines,
-                  categorical_equal_lines,
-                  categorical_lines,
-                  closing_lines,
-                  group_lines,
-                  )
+                      design_lines,
+                      usevariable_equal_lines,
+                      variable_lines,
+                      closing_lines,
+                      categorical_equal_lines,
+                      categorical_lines,
+                      closing_lines,
+                      grouping_lines_1,
+                      grouping_lines_2,
+                      grouping_lines_3
+                      )
 
 variable_structure <- variable_lines %>%
                       unlist() %>%
                       stringr::str_c(., collapse = '')
-
 
 variable_statement <- formula(
                    bquote(~.(
                    noquote(
                    variable_structure
                    ))))
-
 # -----------------------------------------------
 # mplus savedata statement
 # -----------------------------------------------
 
 first_line <- '\n'
-file_line <- paste0('FILE = ',mplus_file,'_inv_01_scores.dat;\n')
-save_line <- 'SAVE = FSCORES;\n'
+file_line <- paste0('RANKINGS = ',mplus_file,'_align_ranking.dat;\n')
+save_h5_line <- paste0('H5RESULTS = ',mplus_file,'_align_results.H5;\n')
 
 save_table <- data.frame(
               save_lines = c(
               first_line,
               file_line,
-              save_line
+              save_h5_line
               ))
 
 save_structure <- save_table %>%
@@ -223,28 +272,23 @@ save_statement <- formula(
 # mplus model statement
 # -----------------------------------------------
 
-num_categories <- dplyr::select(items_data, 1) %>%
-                  na.omit() %>%
-                  unique() %>%
-                  nrow()
 
-num_thresholds <- num_categories - 1
+lambda_lines <- item_table %>%
+                dplyr::filter(scale_num == selected_scale) %>%
+                mutate(i = item) %>%
+                mutate(lambda_lines =
+                paste0('eta by ',i, ';\n')) %>%
+                dplyr::select(lambda_lines)
 
-var_names  <- new_names
-thresholds <- data.frame(items = var_names) %>%
-              mutate(thresholds = num_thresholds) %>%
-              dplyr::select(thresholds) %>%
-              dplyr::pull()
 
-grp_tab <- dplyr::count(data, 
-           !!!rlang::syms(grp_var),
-           !!!rlang::syms(grp_txt)
-           )
+lambda_table <- dplyr::bind_rows(
+                lambda_lines
+                )
 
-grp_lst <- grp_tab[2] %>%
-           dplyr::pull()
 
-model_structure <- gen_configural_model(grp_lst, grp_ref, var_names, thresholds, file = paste0(mplus_file,'_inv_03_mod.txt'))
+model_structure <- lambda_table %>%
+                   unlist() %>%
+                   stringr::str_c(., collapse = '')
 
 model_statement <- formula(
                    bquote(~.(
@@ -259,18 +303,22 @@ model_statement <- formula(
 library(MplusAutomation)
 grm_model <- mplusObject(
 MODEL = '
-eta by i01*;
-eta by i02*;
-eta by i03*;
-eta by i04*;
-[eta@0];
-eta@1;
+eta by i01;
+eta by i02;
+eta by i03;
+eta by i04;
 ', # this is the model statement
 ANALYSIS = '
 TYPE = COMPLEX;
 ESTIMATOR = WLSMV;
+ALIGNMENT = FIXED(*);
+PROCESSORS = 4;
 ',
 VARIABLE ='
+STRATIFICATION = id_s;
+CLUSTER        = id_j;
+WEIGHT         = ws;
+
 IDVARIABLE = id_i;
 
 CATEGORICAL =
@@ -281,19 +329,14 @@ i04
 ',
 OUTPUT ='
 STANDARDIZED
-SAMPSTAT
-PATTERNS
 CINTERVAL
-RESIDUAL
+TECH8
+ALIGN
 SVALUES
 ;
 ',
-PLOT = '
-TYPE = PLOT2;
-', # add item characteristic curves
 SAVEDATA ='
-FILE = eta_scores.dat;
-SAVE = FSCORES;
+RANKINGS = alignment_ranking.csv
 ',
 usevariables = names(data_model),
 rdata = data_model)
@@ -309,7 +352,7 @@ mplus_object <- grm_model %>%
                 SAVEDATA = save_statement
                 ) %>%
                 mplusModeler(.,
-                modelout = paste0(mplus_file,'_inv_03.inp'),
+                modelout = paste0(mplus_file,'_align.inp'),
                 run = 1L,
                 hashfilename = FALSE,
                 writeData = 'always')

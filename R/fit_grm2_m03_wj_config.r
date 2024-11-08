@@ -21,7 +21,7 @@
 #'          )
 #'
 #'
-fit_grm2_m03_config <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
+fit_grm2_m03_wj_config <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
 
 # -----------------------------------------------
 # main objects
@@ -151,7 +151,7 @@ design_lines <- read.table(
 text="
 variable_lines
 '\n'
-'STRATIFICATION = id_s;\n'
+'!STRATIFICATION = id_s;\n'
 'CLUSTER        = id_j;\n'
 'WEIGHT         = ws;  \n'
 'IDVARIABLE     = id_i;\n'

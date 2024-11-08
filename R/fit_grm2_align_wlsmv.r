@@ -191,13 +191,16 @@ variable_lines
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
+# -----------------------------------------------
+# grouping_lines
+# -----------------------------------------------
 
 responses <- responses %>%
              mutate(ctry = COUNTRY)
 
-grouping_lines_2 <- dplyr::count(responses, id_k, ctry, ctry_name) %>%
-dplyr::select(id_k, ctry, ctry_name) %>%
-mutate(variable_lines = paste0(id_k, ' = ', ctry, ' !', ctry_name)) %>%
+grouping_lines_2 <- dplyr::count(responses, id_k, grp, grp_name) %>%
+dplyr::select(id_k, grp, grp_name) %>%
+mutate(variable_lines = paste0(id_k, ' = ', grp, ' !', grp_name)) %>%
 mutate(variable_lines = paste0(variable_lines,'\n')) %>%
 dplyr::select(variable_lines)
 
