@@ -124,6 +124,7 @@ design_lines <- read.table(
 text="
 variable_lines
 '\n'
+'WEIGHT         = ws;  \n'
 'CLUSTER        = id_j;\n'
 'IDVARIABLE     = id_i;\n'
 '                      \n'
