@@ -267,7 +267,7 @@ eta by i04*;
 eta@1;
 ', # this is the model statement
 ANALYSIS = '
-TYPE = COMPLEX;
+TYPE = GENERAL;
 ESTIMATOR = WLSMV;
 ',
 VARIABLE ='

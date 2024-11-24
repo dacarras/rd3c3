@@ -89,6 +89,7 @@ items_data <- responses %>%
 data_model <- dplyr::bind_cols(
               design_data, items_data)
 
+
 # -----------------------------------------------
 # mplus variable statement
 # -----------------------------------------------
@@ -130,53 +131,6 @@ variable_lines
 '\n'
 '!STRATIFICATION = id_s;\n'
 '!CLUSTER        = id_j;\n'
-'WEIGHT         = ws;  \n'
-'IDVARIABLE     = id_i;\n'
-'                      \n'
-",
-header=TRUE, stringsAsFactors = FALSE)
-
-# -----------------------------------------------
-# mplus variable statement
-# -----------------------------------------------
-
-categorical_lines <- item_table %>%
-                     dplyr::filter(
-                     scale_num == selected_scale) %>%
-                     mutate(variable_lines = paste0(item,'\n')) %>%
-                     dplyr::select(variable_lines)
-
-variable_lines <- item_table %>%
-                     dplyr::filter(
-                     scale_num == selected_scale) %>%
-                     mutate(variable_lines = paste0(item,'\n')) %>%
-                     dplyr::select(variable_lines)
-
-
-categorical_equal_lines <- read.table(
-text="
-variable_lines
-'\n'
-'CATEGORICAL =         \n'
-",
-header=TRUE, stringsAsFactors = FALSE)
-
-
-usevariable_equal_lines <- read.table(
-text="
-variable_lines
-'\n'
-'USEVARIABLES =         \n'
-",
-header=TRUE, stringsAsFactors = FALSE)
-
-
-design_lines <- read.table(
-text="
-variable_lines
-'\n'
-'STRATIFICATION = id_s;\n'
-'CLUSTER        = id_j;\n'
 'WEIGHT         = ws;  \n'
 'IDVARIABLE     = id_i;\n'
 '                      \n'
@@ -309,7 +263,7 @@ eta by i03;
 eta by i04;
 ', # this is the model statement
 ANALYSIS = '
-TYPE = COMPLEX;
+TYPE = GENERAL;
 ESTIMATOR = WLSMV;
 ALIGNMENT = FIXED(*);
 PROCESSORS = 4;
