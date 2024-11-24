@@ -78,7 +78,7 @@ reverse_items <- scales_data %>%
                  .$item
 
 design_data <- responses %>%
-               dplyr::select(id_k, id_i, id_j, id_s, ws)
+               dplyr::select(id_k, id_i, id_j, ws)
 
 items_data <- responses %>%
               rename_at(vars(pre_names), ~paste0(new_names)) %>%
