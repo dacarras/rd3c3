@@ -3,8 +3,8 @@
 \name{fit_grm2_align_w_wlsmv}
 \alias{fit_grm2_align_w_wlsmv}
 \title{fit_grm2_align_w_wlsmv() it fits a between country GRM with alignment method, 
-with a weighted sample design using MPLUS and MplusAutomation.
-The "_w_" version accounts for selection probality information alone.}
+with a complex sample design using MPLUS and MplusAutomation.
+The "_w_" accounts for survey weights alone.}
 \usage{
 fit_grm2_align_w_wlsmv(data, scale_num, scale_info)
 }
@@ -20,8 +20,8 @@ mplus_object generated with MplusAutomation
 }
 \description{
 fit_grm2_align_w_wlsmv() it fits a between country GRM with alignment method, 
-with a weighted sample design using MPLUS and MplusAutomation.
-The "_w_" version accounts for selection probality information alone.
+with a complex sample design using MPLUS and MplusAutomation.
+The "_w_" accounts for survey weights alone.
 }
 \examples{
 

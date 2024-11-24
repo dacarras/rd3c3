@@ -1,6 +1,6 @@
 #' fit_grm2_align_w_wlsmv() it fits a between country GRM with alignment method, 
-#' with a weighted sample design using MPLUS and MplusAutomation.
-#' The "_w_" version accounts for selection probality information alone.
+#' with a complex sample design using MPLUS and MplusAutomation.
+#' The "_w_" accounts for survey weights alone.
 #'
 #' @param data a data frame, where rows = observations, and columns = variables
 #' @param scale_num a number, that identifies a unique set of items within the scale_info table
@@ -89,7 +89,6 @@ items_data <- responses %>%
 data_model <- dplyr::bind_cols(
               design_data, items_data)
 
-
 # -----------------------------------------------
 # mplus variable statement
 # -----------------------------------------------
@@ -137,6 +136,9 @@ variable_lines
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
+# -----------------------------------------------
+# grouping_lines
+# -----------------------------------------------
 
 grouping_lines_1 <- read.table(
 text="
@@ -146,13 +148,6 @@ variable_lines
 '\n'
 ",
 header=TRUE, stringsAsFactors = FALSE)
-
-# -----------------------------------------------
-# grouping_lines
-# -----------------------------------------------
-
-responses <- responses %>%
-             mutate(ctry = COUNTRY)
 
 grouping_lines_2 <- dplyr::count(responses, id_k, grp, grp_name) %>%
 dplyr::select(id_k, grp, grp_name) %>%
@@ -269,7 +264,7 @@ ALIGNMENT = FIXED(*);
 PROCESSORS = 4;
 ',
 VARIABLE ='
-STRATIFICATION = id_s;
+!STRATIFICATION = id_s;
 CLUSTER        = id_j;
 WEIGHT         = ws;
 
