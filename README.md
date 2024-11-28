@@ -1,3 +1,3 @@
-# rd3cr3
+# rd3c3
 
-A wrapper function library to fit model based invariance analysis, alignment methods analysis with graded response models with probit link.
+A wrapper function library designed to fit model-based invariance analysis and alignment methods analysis for international large-scale assessments, using graded response models with a probit link. This work was supported by the IEA Research and Development Fund.
