@@ -16,7 +16,6 @@ get_desc <- function(x){
 
   # requires
   library(dplyr)
-  library(r4sda)
   library(skimr)
   library(tidyr)
   library(stats)
@@ -24,7 +23,7 @@ get_desc <- function(x){
   # histograms
   get_hist <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         hist = ~skimr::inline_hist(.)
       ))
@@ -39,7 +38,7 @@ get_desc <- function(x){
   # minimum
   get_p00 <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         p00 = ~stats::quantile(., probs = 0, na.rm = TRUE, names = FALSE)
       ))
@@ -54,7 +53,7 @@ get_desc <- function(x){
   # maximum
   get_p100 <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         p100 = ~stats::quantile(., probs = 1, na.rm = TRUE, names = FALSE)
       ))
@@ -69,7 +68,7 @@ get_desc <- function(x){
   # mean
   get_mean <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         mean = ~mean(., na.rm = TRUE)
       ))
@@ -84,7 +83,7 @@ get_desc <- function(x){
   # standard deviation
   get_sd <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         sd = ~stats::sd(., na.rm = TRUE)
       ))
@@ -99,7 +98,7 @@ get_desc <- function(x){
   # median
   get_p50 <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         p50 = ~stats::quantile(., probs = .50, na.rm = TRUE, names = FALSE)
       ))
@@ -114,7 +113,7 @@ get_desc <- function(x){
   # p25
   get_p25 <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         p25 = ~stats::quantile(., probs = .25, na.rm = TRUE, names = FALSE)
       ))
@@ -129,7 +128,7 @@ get_desc <- function(x){
   # p75
   get_p75 <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         p75 = ~stats::quantile(., probs = .75, na.rm = TRUE, names = FALSE)
       ))
@@ -144,7 +143,7 @@ get_desc <- function(x){
   # missing
   get_missing <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         missing = ~sum(is.na(.))
       ))
@@ -159,7 +158,7 @@ get_desc <- function(x){
   # get number of cases
   get_n <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         nobs = ~NROW(.)
       ))
@@ -174,7 +173,7 @@ get_desc <- function(x){
   # get complete
   get_complete <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         complete = ~sum(complete.cases(.))
       ))
@@ -190,7 +189,7 @@ get_desc <- function(x){
   # skewness
   get_skew <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         skew = ~moments::skewness(., na.rm = TRUE)
       ))
@@ -205,7 +204,7 @@ get_desc <- function(x){
   # kurtosis
   get_kurt <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         kurt = ~moments::kurtosis(., na.rm = TRUE)
       ))

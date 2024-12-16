@@ -66,7 +66,7 @@ items_data <- data_model %>%
               rename_at(vars(all_of(pre_names)), ~paste0(new_names)) %>%
               mutate_at(
               	.vars = reverse_items, 
-              	.funs = ~r4sda::reverse(.)) %>%
+              	.funs = ~reverse(.)) %>%
               dplyr::select(one_of(item_names))
 
 data_selected <- dplyr::bind_cols(items_data)
@@ -81,7 +81,7 @@ x <- data_selected
 library(dplyr)
 items_table <- x %>% as.data.frame()
 
-table_1 <- r4sda::get_desc(items_table)
+table_1 <- get_desc(items_table)
 
 table_2 <- items_table %>%
            CTT::itemAnalysis(.) %>%

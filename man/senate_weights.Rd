@@ -27,7 +27,7 @@ a collection of dplyr::mutate sequences to create normalized and effective sampl
 \examples{
 library(dplyr)
 data_frame_with_weights <- data_frame \%>\%
-                           r4sda::senate_weights(.,
+                           senate_weights(.,
                            scale = 1000,
                            wt = 'wt',
                            id_k = 'id_k')

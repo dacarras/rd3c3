@@ -68,7 +68,7 @@ items_data <- data_model %>%
               rename_at(vars(pre_names), ~paste0(new_names)) %>%
               mutate_at(
               	.vars = reverse_items,
-              	.funs = ~r4sda::reverse(.)) %>%
+              	.funs = ~reverse(.)) %>%
               dplyr::select(one_of(item_names))
 
 data_selected <- variables_data
@@ -82,20 +82,13 @@ options(warn=-1)
 
   # requires
   library(dplyr)
-  library(r4sda)
   library(skimr)
   library(tidyr)
   library(stats)
 
-remove_labels <- function(data){
-require(haven)
-require(labelled)
-require(sjlabelled)
-data <- data %>%
-          haven::zap_label() %>%
-          labelled::remove_labels() %>%
-          sjlabelled::remove_all_labels()
-  return(data)
+remove_labels <- function(x){
+data <- dplyr::mutate(x, across(everything(), as.vector))
+return(data)
 }
 
   # histograms
@@ -282,7 +275,7 @@ data <- data %>%
   # kurtosis
   get_kurt <- function(x){
     wide_table <- x %>%
-      r4sda::remove_labels() %>%
+      remove_labels() %>%
       summarise_all(list(
         kurt = ~moments::kurtosis(., na.rm = TRUE)
       ))
