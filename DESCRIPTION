@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: dacarras & nurullah
 Maintainer: The package maintainer <dacarras@uc.cl>
 Description: Different functions to assist the generation of scale score comparability report between many countries. Including: item descriptive statistics, missing patterns, dimensionality, latent scores and reliability.
-Imports: dplyr, tidyr, ggplot2, ggpubr, ggExtra, haven, tibble, purrr, labelled, sjlabelled, skimr, stringr, tidyr, waffle, MplusAutomation, TAM, VIM, lme4, broom.mixed, stringr, rlang, survey, tools, stats, moments, CTT, DA.MRFA, psych, r4sda 
+Imports: dplyr, tidyr, ggplot2, ggpubr, ggExtra, haven, tibble, purrr, labelled, sjlabelled, skimr, stringr, tidyr, waffle, MplusAutomation, TAM, VIM, lme4, broom.mixed, stringr, rlang, survey, tools, stats, moments, CTT, psych, r4sda 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
