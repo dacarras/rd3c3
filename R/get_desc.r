@@ -40,11 +40,11 @@ get_desc <- function(x){
     wide_table <- x %>%
       remove_labels() %>%
       summarise_all(list(
-        p00 = ~stats::quantile(., probs = 0, na.rm = TRUE, names = FALSE)
+        min = ~stats::quantile(., probs = 0, na.rm = TRUE, names = FALSE)
       ))
     min_table <- data.frame(
       var = names(x),
-      p00 = tidyr::gather(wide_table)$value
+      min = tidyr::gather(wide_table)$value
     ) %>%
       mutate(var = as.character(var))
     return(min_table)
@@ -55,16 +55,15 @@ get_desc <- function(x){
     wide_table <- x %>%
       remove_labels() %>%
       summarise_all(list(
-        p100 = ~stats::quantile(., probs = 1, na.rm = TRUE, names = FALSE)
+        max = ~stats::quantile(., probs = 1, na.rm = TRUE, names = FALSE)
       ))
     max_table <- data.frame(
       var = names(x),
-      p100 = tidyr::gather(wide_table)$value
+      max = tidyr::gather(wide_table)$value
     ) %>%
       mutate(var = as.character(var))
     return(max_table)
   }
-
   # mean
   get_mean <- function(x){
     wide_table <- x %>%
