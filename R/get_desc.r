@@ -36,7 +36,7 @@ get_desc <- function(x){
   }
 
   # minimum
-  get_p00 <- function(x){
+  get_min <- function(x){
     wide_table <- x %>%
       remove_labels() %>%
       summarise_all(list(
@@ -51,7 +51,7 @@ get_desc <- function(x){
   }
 
   # maximum
-  get_p100 <- function(x){
+  get_max <- function(x){
     wide_table <- x %>%
       remove_labels() %>%
       summarise_all(list(
@@ -223,11 +223,11 @@ get_desc <- function(x){
     mutate(complete = complete/n) %>%
     dplyr::left_join(.,get_mean(x), by = 'var') %>%
     dplyr::left_join(.,get_sd(x), by = 'var') %>%
-    dplyr::left_join(.,get_p00(x), by = 'var') %>%
+    dplyr::left_join(.,get_min(x), by = 'var') %>%
     dplyr::left_join(.,get_p25(x), by = 'var') %>%
     dplyr::left_join(.,get_p50(x), by = 'var') %>%
     dplyr::left_join(.,get_p75(x), by = 'var') %>%
-    dplyr::left_join(.,get_p100(x), by = 'var') %>%
+    dplyr::left_join(.,get_max(x), by = 'var') %>%
     dplyr::left_join(.,get_skew(x), by = 'var') %>%
     dplyr::left_join(.,get_kurt(x), by = 'var') %>%
     dplyr::left_join(.,get_hist(x), by = 'var')
