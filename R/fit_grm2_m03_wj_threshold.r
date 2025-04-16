@@ -1,4 +1,4 @@
-#' fit_grm2_m03_w_config() it fits a graded response model (GRM) using MPLUS and MplusAutomation
+#' fit_grm2_m03_wj_threshold() it fits a graded response model (GRM) using MPLUS and MplusAutomation
 #'
 #' @param data a data frame, where rows = observations, and columns = variables
 #' @param scale_num a number, that identifies a unique set of items within the scale_info table
@@ -21,7 +21,7 @@
 #'          )
 #'
 #'
-fit_grm2_m03_w_config <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
+fit_grm2_m03_wj_threshold <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
 
 # -----------------------------------------------
 # main objects
@@ -152,7 +152,7 @@ text="
 variable_lines
 '\n'
 '!STRATIFICATION = id_s;\n'
-'!CLUSTER        = id_j;\n'
+'CLUSTER        = id_j;\n'
 'WEIGHT         = ws;  \n'
 'IDVARIABLE     = id_i;\n'
 '                      \n'
@@ -244,7 +244,7 @@ grp_tab <- dplyr::count(data,
 grp_lst <- grp_tab[2] %>%
            dplyr::pull()
 
-model_structure <- gen_configural_model(grp_lst, grp_ref, var_names, thresholds, file = paste0(mplus_file,'_inv_03_mod.txt'))
+model_structure <- gen_threshold_model(grp_lst, grp_ref, var_names, thresholds, file = paste0(mplus_file,'_inv_03_mod.txt'))
 
 model_statement <- formula(
                    bquote(~.(
@@ -267,7 +267,7 @@ eta by i04*;
 eta@1;
 ', # this is the model statement
 ANALYSIS = '
-TYPE = GENERAL;
+TYPE = COMPLEX;
 ESTIMATOR = WLSMV;
 ',
 VARIABLE ='

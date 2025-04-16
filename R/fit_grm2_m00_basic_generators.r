@@ -286,10 +286,10 @@ return(model_block)
 }
 
 #--------------------------------------------------------------------
-# configural: threshold invariance
+# threshold invariance
 #--------------------------------------------------------------------
 
-gen_configural_model <- function(grp_lst, grp_ref, var_names, thresholds, file){
+gen_threshold_model <- function(grp_lst, grp_ref, var_names, thresholds, file){
 grp_lst     <- grp_lst
 var_names   <- var_names
 thresholds  <- thresholds
@@ -328,10 +328,10 @@ return(model_block)
 }
 
 #--------------------------------------------------------------------
-# baseline model
+# configural (descriptive model)
 #--------------------------------------------------------------------
 
-gen_baseline_model <- function(grp_lst, grp_ref, var_names, thresholds, file){
+gen_configural_model <- function(grp_lst, grp_ref, var_names, thresholds, file){
 grp_lst     <- grp_lst
 var_names   <- var_names
 thresholds  <- thresholds

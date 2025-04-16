@@ -1,4 +1,4 @@
-#' fit_grm2_m04_w_base() it fits a graded response model (GRM) using MPLUS and MplusAutomation
+#' fit_grm2_m03_w_threshold() it fits a graded response model (GRM) using MPLUS and MplusAutomation
 #'
 #' @param data a data frame, where rows = observations, and columns = variables
 #' @param scale_num a number, that identifies a unique set of items within the scale_info table
@@ -11,7 +11,7 @@
 #'
 #' @examples
 #'
-#' inv_4 <- fit_grm2_m04_base(
+#' inv_3 <- fit_grm2_m03_w_threshold(
 #'          data = data_model, 
 #'          scale_num = scale_id, 
 #'          scale_info = scales_data,
@@ -21,7 +21,7 @@
 #'          )
 #'
 #'
-fit_grm2_m04_w_base <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
+fit_grm2_m03_w_threshold <- function(data, scale_num, scale_info, grp_var, grp_txt, grp_ref) {
 
 # -----------------------------------------------
 # main objects
@@ -199,7 +199,7 @@ variable_statement <- formula(
 # -----------------------------------------------
 
 first_line <- '\n'
-file_line <- paste0('FILE = ',mplus_file,'_inv_04_scores.dat;\n')
+file_line <- paste0('FILE = ',mplus_file,'_inv_03_scores.dat;\n')
 save_line <- 'SAVE = FSCORES;\n'
 
 save_table <- data.frame(
@@ -244,7 +244,7 @@ grp_tab <- dplyr::count(data,
 grp_lst <- grp_tab[2] %>%
            dplyr::pull()
 
-model_structure <- gen_baseline_model(grp_lst, grp_ref, var_names, thresholds, file = paste0(mplus_file,'_inv_04_mod.txt'))
+model_structure <- gen_threshold_model(grp_lst, grp_ref, var_names, thresholds, file = paste0(mplus_file,'_inv_03_mod.txt'))
 
 model_statement <- formula(
                    bquote(~.(
@@ -309,7 +309,7 @@ mplus_object <- grm_model %>%
                 SAVEDATA = save_statement
                 ) %>%
                 mplusModeler(.,
-                modelout = paste0(mplus_file,'_inv_04.inp'),
+                modelout = paste0(mplus_file,'_inv_03.inp'),
                 run = 1L,
                 hashfilename = FALSE,
                 writeData = 'always')
