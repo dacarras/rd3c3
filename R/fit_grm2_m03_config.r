@@ -199,7 +199,7 @@ variable_statement <- formula(
 # -----------------------------------------------
 
 first_line <- '\n'
-file_line <- paste0('FILE = ',mplus_file,'_inv_01_scores.dat;\n')
+file_line <- paste0('FILE = ',mplus_file,'_inv_03_scores.dat;\n')
 save_line <- 'SAVE = FSCORES;\n'
 
 save_table <- data.frame(
