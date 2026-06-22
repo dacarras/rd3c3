@@ -202,13 +202,17 @@ variable_statement <- formula(
 # mplus savedata statement
 # -----------------------------------------------
 
-first_line <- '\n'
-file_line <- paste0('RANKINGS = ',mplus_file,'_align_ranking.dat;\n')
+first_line   <- '\n'
+save_line    <- paste0('SAVE = FSCORES;\n')
+theta_line   <- paste0('FILE = ',mplus_file,'_align_scores.dat;\n')
+file_line    <- paste0('RANKINGS = ',mplus_file,'_align_ranking.dat;\n')
 save_h5_line <- paste0('H5RESULTS = ',mplus_file,'_align_results.H5;\n')
 
 save_table <- data.frame(
               save_lines = c(
               first_line,
+              save_line,
+              theta_line,
               file_line,
               save_h5_line
               ))

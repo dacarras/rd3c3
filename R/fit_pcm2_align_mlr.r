@@ -1,6 +1,4 @@
-#' fit_grm2_align_wj_wlsmv() it fits a between country GRM with alignment method, 
-#' with a complex sample design using MPLUS and MplusAutomation.
-#' The "_wj_" version uses taylor series linearization, using clusters and weights.
+#' fit_pcm2_align_mlr() it fits a between country GRM with alignment method, with a complex sample design using MPLUS and MplusAutomation
 #'
 #' @param data a data frame, where rows = observations, and columns = variables
 #' @param scale_num a number, that identifies a unique set of items within the scale_info table
@@ -10,13 +8,13 @@
 #'
 #' @examples
 #'
-#' scale_001_align <- fit_grm2_align_wlsmv(
+#' scale_001_align <- fit_pcm2_align_mlr(
 #' scale_info = scales_data,
 #' scale_num  = 1,
 #' data = data_model)
 #'
 #'
-fit_grm2_align_wj_wlsmv <- function(data, scale_num, scale_info) {
+fit_pcm2_align_mlr <- function(data, scale_num, scale_info) {
 
 # -----------------------------------------------
 # main objects
@@ -78,7 +76,7 @@ reverse_items <- scales_data %>%
                  .$item
 
 design_data <- responses %>%
-               dplyr::select(id_k, id_i, id_j, ws)
+               dplyr::select(id_k, id_i, id_j, id_s, ws)
 
 items_data <- responses %>%
               rename_at(vars(pre_names), ~paste0(new_names)) %>%
@@ -96,7 +94,7 @@ data_model <- dplyr::bind_cols(
 categorical_lines <- item_table %>%
                      dplyr::filter(
                      scale_num == selected_scale) %>%
-                     mutate(variable_lines = paste0(item,'\n')) %>%
+                     mutate(variable_lines = paste0(item,' (GPCM)','\n')) %>%
                      dplyr::select(variable_lines)
 
 variable_lines <- item_table %>%
@@ -128,7 +126,7 @@ design_lines <- read.table(
 text="
 variable_lines
 '\n'
-'!STRATIFICATION = id_s;\n'
+'STRATIFICATION = id_s;\n'
 'CLUSTER        = id_j;\n'
 'WEIGHT         = ws;  \n'
 'IDVARIABLE     = id_i;\n'
@@ -136,6 +134,10 @@ variable_lines
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
+
+# -----------------------------------------------
+# grouping_lines
+# -----------------------------------------------
 
 grouping_lines_1 <- read.table(
 text="
@@ -146,9 +148,8 @@ variable_lines
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
-# -----------------------------------------------
-# grouping_lines
-# -----------------------------------------------
+responses <- responses %>%
+             mutate(ctry = COUNTRY)
 
 grouping_lines_2 <- dplyr::count(responses, id_k, grp, grp_name) %>%
 dplyr::select(id_k, grp, grp_name) %>%
@@ -264,12 +265,12 @@ eta by i04;
 ', # this is the model statement
 ANALYSIS = '
 TYPE = COMPLEX;
-ESTIMATOR = WLSMV;
+ESTIMATOR = MLR;
 ALIGNMENT = FIXED(*);
 PROCESSORS = 4;
 ',
 VARIABLE ='
-!STRATIFICATION = id_s;
+STRATIFICATION = id_s;
 CLUSTER        = id_j;
 WEIGHT         = ws;
 
