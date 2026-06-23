@@ -148,9 +148,6 @@ variable_lines
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
-responses <- responses %>%
-             mutate(ctry = COUNTRY)
-
 grouping_lines_2 <- dplyr::count(responses, id_k, grp, grp_name) %>%
 dplyr::select(id_k, grp, grp_name) %>%
 mutate(variable_lines = paste0(id_k, ' = ', grp, ' !', grp_name)) %>%

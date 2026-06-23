@@ -65,8 +65,8 @@ design_data <- data_model %>%
 items_data <- data_model %>%
               rename_at(vars(pre_names), ~paste0(new_names)) %>%
               mutate_at(
-              	.vars = reverse_items,
-              	.funs = ~r4sda::reverse(.)) %>%
+                .vars = reverse_items,
+                .funs = ~r4sda::reverse(.)) %>%
               dplyr::select(one_of(item_names))
 
 data_selected <- dplyr::bind_cols(
@@ -158,6 +158,21 @@ pa_ucp_lubbe_fast <- function(
     cuts <- quantile(z, probs = probs, type = 1)
     findInterval(z, cuts, rightmost.closed = TRUE)
   }
+
+  # -----------------------------------------------
+  # 3b. Detach large enclosing environments
+  #     poly_sim/poly_psych/poly_lavaan/discretize_col are
+  #     defined inside pa_ucp_lubbe_fast(), whose own enclosing
+  #     environment is pa_lubbe_fast()'s frame — which holds
+  #     data_model, data_selected, items_data, etc. Without this,
+  #     future has to serialize that whole chain to each worker.
+  #     These helpers only use their own arguments, so reassigning
+  #     a clean environment is safe.
+  # -----------------------------------------------
+  environment(poly_psych)     <- globalenv()
+  environment(poly_lavaan)    <- globalenv()
+  environment(poly_sim)       <- globalenv()
+  environment(discretize_col) <- globalenv()
 
   # -----------------------------------------------
   # 4. Set up parallel backend

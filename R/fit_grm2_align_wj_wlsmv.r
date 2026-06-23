@@ -136,6 +136,9 @@ variable_lines
 ",
 header=TRUE, stringsAsFactors = FALSE)
 
+# -----------------------------------------------
+# grouping_lines
+# -----------------------------------------------
 
 grouping_lines_1 <- read.table(
 text="
@@ -145,10 +148,6 @@ variable_lines
 '\n'
 ",
 header=TRUE, stringsAsFactors = FALSE)
-
-# -----------------------------------------------
-# grouping_lines
-# -----------------------------------------------
 
 grouping_lines_2 <- dplyr::count(responses, id_k, grp, grp_name) %>%
 dplyr::select(id_k, grp, grp_name) %>%
