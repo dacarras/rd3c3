@@ -50,10 +50,10 @@ caterpillar_mean_plot <- function(mlm_model){
   ## plot function
   p <- ggplot(rand_intercept, aes(x=reorder(id_j,u_j), y=u_j, ymin=ll, ymax=ul))+
     geom_pointrange(
-      colour='grey20', 
-      alpha = .33, 
-      linewidth = .25,
-      fatten = 1
+      colour    = 'grey50',   # lighter base (was grey20)
+      alpha     = 0.15,       # main lever: reduces the overlap build-up (was .33)
+      linewidth = 0.2,        # thinner whiskers (was .25)
+      fatten    = 0.8         # smaller central points (was 1)
       )+
     geom_hline(yintercept = intercept, linetype=2, linewidth = .25, colour = "grey50") +
     theme_ipsum() +
@@ -69,10 +69,12 @@ caterpillar_mean_plot <- function(mlm_model){
     xlab('cluster ranking') +
     ylab('latent means') +
     annotate('text',
-             # positions the ICC at the first fifth of the rank the clusters
-             x = nrow(rand_intercept)/5,
-             # positions the ICC at the centered grand mean
-             y = intercept,
+             # pin to the top-left panel corner, near the "latent means" title
+             x = -Inf, y = Inf,
+             # nudge inward: hjust pushes right off the axis, vjust pushes down
+             hjust = -0.3, vjust = 1.8,
+             size = 3.2,
+             colour = 'grey30',
              label = paste0('ICC = ', format(round(icc, 2), nsmall = 2)))
   ## return plot
   return(p)
