@@ -71,6 +71,15 @@ scale_name <- scale_info %>%
 # get tau parameters
 # -----------------------------------------------
 
+
+lam_est <- mplus_object %>%
+           purrr::pluck('results') %>%
+           purrr::pluck('parameters') %>%
+           purrr::pluck('unstandardized') %>%
+           dplyr::filter(paramHeader %in% c('ETA.BY')) %>%
+           tidyr::separate(param, c('item', 'cat'), sep = "[^[:alnum:]]+") %>%
+           dplyr::select(item, est)
+
 tau_est <- mplus_object %>%
            purrr::pluck('results') %>%
            purrr::pluck('parameters') %>%
@@ -81,12 +90,14 @@ tau_est <- mplus_object %>%
            mutate(item = stringr::str_replace(item, "[^[:alnum:]]", '')) %>%
            dplyr::select(item, steps, est) %>%
            tidyr::spread(steps, est) %>%
-           tidyr::gather(key = 'cat', value = 'logit', -item)
+           tidyr::gather(key = 'cat', value = 'logit', -item) %>%
+           dplyr::left_join(., lam_est, by = 'item') %>%
+           mutate(b_est = logit/est)
 
 
 tau_order <- tau_est %>%
              dplyr::filter(cat == 'c2') %>%
-             arrange(desc(logit)) %>%
+             arrange(desc(b_est)) %>%
              mutate(x_pos = seq(1:nrow(.))) %>%
              dplyr::select(item, x_pos)
 
@@ -167,7 +178,7 @@ p1 <- gghistogram(theta_p,
 
 library(ggpubr)
 library(ggplot2)
-p2 <- ggdotchart(plot_data, x = "item", y = "logit",
+p2 <- ggdotchart(plot_data, x = "item", y = "b_est",
    group = "order_plot", color = "order_plot",
    palette = c('grey50','black', 'grey70'),
    rotate = TRUE,
