@@ -1,4 +1,4 @@
-#' get_realizations() produces realizations given a Mplus code model (i.e., fixed calibration)
+#' fit_fixed() fit model with fixed model parameters to retrieve model realizations l (i.e., fixed calibration)
 #'
 #' @param data a data frame, where rows = observations, and columns = variables
 #' @param scale_num a number, that identifies a unique set of items within the scale_info table
@@ -10,7 +10,7 @@
 #'
 #' @examples
 #'
-#' mplus_out_eta  <- rd3c3::silent(rd3c3::get_realizations(
+#' mplus_out_eta  <- rd3c3::silent(rd3c3::fit_fixed(
 #' data            = data_responses,
 #' scale_num       = scale_id,
 #' scale_info      = scales_data,
@@ -18,7 +18,7 @@
 #' file_name       = paste0(scale_file, '_realizations')
 #' ))
 #'
-get_realizations <- function(data, scale_num, scale_info, model_param, file_name){
+fit_fixed <- function(data, scale_num, scale_info, model_param, file_name){
 
 #----------------------------------------------------------
 # define input object
