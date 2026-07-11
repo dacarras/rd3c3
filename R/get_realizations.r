@@ -1,4 +1,4 @@
-#' re_fit_model() produces realizations given a Mplus code model (i.e., fixed calibration)
+#' get_realizations() produces realizations given a Mplus code model (i.e., fixed calibration)
 #'
 #' @param data a data frame, where rows = observations, and columns = variables
 #' @param scale_num a number, that identifies a unique set of items within the scale_info table
@@ -10,13 +10,15 @@
 #'
 #' @examples
 #'
-#' scale_001 <- fit_grm2(
-#' scale_info = scales_data,
-#' scale_num  = 1,
-#' data = data_model)
+#' mplus_out_eta  <- rd3c3::silent(rd3c3::get_realizations(
+#' data            = data_responses,
+#' scale_num       = scale_id,
+#' scale_info      = scales_data,
+#' model_param     = get_response_model(grm_model),
+#' file_name       = paste0(scale_file, '_realizations')
+#' ))
 #'
-#'
-re_fit_model <- function(data, scale_num, scale_info, model_param, file_name){
+get_realizations <- function(data, scale_num, scale_info, model_param, file_name){
 
 #----------------------------------------------------------
 # define input object
