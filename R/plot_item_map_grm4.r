@@ -141,17 +141,6 @@ x_pos <- plot_data %>%
          unique() %>%
          .$x_pos
 
-# not in use
-category_location <- plot_data %>%
-                     dplyr::filter(x_pos == max(x_pos)) %>%
-                     mutate(plot_location = logit + .25) %>%
-                     dplyr::select(plot_location) %>%
-                     dplyr::bind_rows(.,
-                      data.frame(plot_location = - low_limit)) %>%
-                     arrange(plot_location) %>%
-                     .$plot_location %>%
-                     as.vector()
-
 # -----------------------------------------------
 # histogram
 # -----------------------------------------------
