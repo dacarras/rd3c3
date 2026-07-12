@@ -77,7 +77,7 @@ items_data <- data_model %>%
               rename_at(vars(all_of(pre_names)), ~paste0(new_names)) %>%
               mutate_at(
               	.vars = reverse_items,
-              	.funs = ~r4sda::reverse(.)) %>%
+              	.funs = ~reverse(.)) %>%
               dplyr::select(one_of(item_names))
 
 # -----------------------------------------------
